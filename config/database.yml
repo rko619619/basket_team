@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  port: 5437
+  username: kinjaziss
+  password: kinjaziss
+  pool: 5
+
+development:
+  <<: *default
+  database: basket_team
+
+test:
+  <<: *default
+  database: basket_team
+
+production:
+  <<: *default
+  database: mydatabase_production
+  username: <%= ENV['DATABASE_USER'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>

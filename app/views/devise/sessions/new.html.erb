@@ -1,0 +1,28 @@
+<!-- app/views/devise/sessions/new.html.erb -->
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      <h3 class="card-title mb-4">Sign In</h3>
+
+      <%= turbo_frame_tag "login_frame" do %>
+        <%= form_with scope: :admin, url: admin_session_path, method: :post, data: { turbo_frame: "login_frame" }, class: 'form' do |form| %>
+          <div class="mb-3">
+            <%= form.label :email, class: 'form-label' %>
+            <%= form.email_field :email, autofocus: true, class: 'form-control' %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :password, class: 'form-label' %>
+            <%= form.password_field :password, class: 'form-control' %>
+          </div>
+
+          <%= form.submit 'Log in', class: 'btn btn-primary w-100' %>
+        <% end %>
+      <% end %>
+
+      <div class="mt-3">
+        <%= render "devise/shared/links" %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<!-- app/views/basketball_teams/index.html.erb -->
+<div class="container mt-5">
+  <h2>Basketball Teams</h2>
+  <%= link_to 'New Team', new_basketball_team_path, class: 'btn btn-primary mb-3' %>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>City</th>
+      <th>Championships</th>
+      <th colspan="3">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @basketball_teams.each do |team| %>
+      <tr>
+        <td><%= team.name %></td>
+        <td><%= team.type %></td>
+        <td><%= link_to 'Show', team %></td>
+        <td><%= link_to 'Edit', edit_basketball_team_path(team) %></td>
+        <td>
+          <%= button_to 'Destroy', team, method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
