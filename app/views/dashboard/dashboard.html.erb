@@ -1,0 +1,48 @@
+<!-- app/views/admins/dashboard.html.erb -->
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Добро пожаловать</h2>
+    <%= button_to "Выйти", destroy_admin_session_path,
+                  method: :delete,
+                  class: "btn btn-outline-danger btn-lg",
+                  data: { turbo_method: :delete },
+                  style: "margin-left: auto;" %>
+  </div>
+
+  <%= turbo_frame_tag "basketball_teams" do %>
+    <% if @basketball_teams.present? %>
+      <h3 class="mb-4">Команды</h3>
+      <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+          <th>Название</th>
+          <th>Описание</th>
+          <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @basketball_teams.each do |team| %>
+          <tr>
+            <td><%= team.name %></td>
+            <td><%= team.description %></td>
+            <td>
+              <div class="d-flex gap-2">
+                <%= link_to 'Показать', details_basketball_team_path(team), class: "btn btn-sm btn-info" %>
+                <%= link_to 'Изменить', edit_basketball_team_path(team), data: { turbo_frame: "basketball_team_#{team.id}" }, class: "btn btn-sm btn-primary" %>
+                <%= button_to 'Удалить', basketball_team_path(team), method: :delete, data: { turbo_confirm: 'Вы уверены?' }, class: 'btn btn-sm btn-danger' %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>Команд нет.</p>
+    <% end %>
+  <% end %>
+
+  <%= turbo_frame_tag "new_basketball_team" do %>
+    <h3 class="mb-4">Добавить новую команду</h3>
+    <%= render 'form', basketball_team: @new_basketball_team %>
+  <% end %>
+</div>

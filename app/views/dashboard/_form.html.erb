@@ -1,0 +1,24 @@
+<!-- app/views/basketball_teams/_form.html.erb -->
+<div class="card shadow-sm">
+  <div class="card-body">
+    <%= form_with(model: basketball_team, local: false, class: "needs-validation") do |form| %>
+      <div class="mb-3">
+        <%= form.label :'Название', class: 'form-label' %>
+        <%= form.text_field :name, class: 'form-control', required: true %>
+        <div class="invalid-feedback">
+          Название команды
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :'Описание', class: 'form-label' %>
+        <%= form.text_field :description, class: 'form-control', required: true %>
+        <div class="invalid-feedback">
+         Описание команды
+        </div>
+      </div>
+
+      <%= form.submit 'Сохранить', class: 'btn btn-primary w-100' %>
+    <% end %>
+  </div>
+</div>

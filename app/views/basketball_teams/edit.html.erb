@@ -1,0 +1,4 @@
+<%= turbo_frame_tag "basketball_team_#{@basketball_team.id}" do %>
+  <h3>Редактировать команду</h3>
+  <%= render 'form', basketball_team: @basketball_team %>
+<% end %>

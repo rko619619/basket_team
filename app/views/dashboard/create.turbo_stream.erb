@@ -1,0 +1,2 @@
+<%= turbo_stream.prepend "basketball_teams", partial: "basketball_teams/team", locals: { team: @basketball_team } %>
+<%= turbo_stream.replace "new_basketball_team", partial: "basketball_teams/form", locals: { basketball_team: BasketballTeam.new } %>

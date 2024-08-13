@@ -1,12 +1,29 @@
 # app/controllers/basketball_teams_controller.rb
 class BasketballTeamsController < ApplicationController
-  before_action :set_basketball_team, only: %i[show edit update destroy]
+  before_action :set_basketball_team, only: %i[show edit update destroy details create_player]
 
   def index
     @basketball_teams = BasketballTeam.all
   end
 
   def show
+    redirect_to dashboard_path
+  end
+
+  def details
+    @basketball_team = BasketballTeam.find(params[:id])
+    @players = @basketball_team.players
+    @player = Player.new
+  end
+
+  def create_player
+    @player = @basketball_team.players.build(player_params)
+    if @player.save
+      redirect_to details_basketball_team_path(@basketball_team), notice: 'Игрок был добавлен.'
+    else
+      @players = @basketball_team.players
+      render :details
+    end
   end
 
   def new
@@ -16,26 +33,40 @@ class BasketballTeamsController < ApplicationController
   def create
     @basketball_team = BasketballTeam.new(basketball_team_params)
     if @basketball_team.save
-      redirect_to @basketball_team, notice: 'Basketball team was successfully created.'
+      redirect_to dashboard_path, notice: 'Команда успешно создана.'
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
   def edit
+    respond_to do |format|
+      format.html # для обычного HTML
+      format.turbo_stream # для Turbo Frames
+    end
   end
 
   def update
     if @basketball_team.update(basketball_team_params)
-      redirect_to @basketball_team, notice: 'Basketball team was successfully updated.'
+      respond_to do |format|
+        format.html { redirect_to dashboard_path, notice: 'Команда успешно обновлена.' }
+        format.turbo_stream
+      end
     else
-      render :edit
+      respond_to do |format|
+        format.html { render :edit }
+        format.turbo_stream
+      end
     end
   end
 
   def destroy
+    @basketball_team = BasketballTeam.find(params[:id])
     @basketball_team.destroy
-    redirect_to basketball_teams_url, notice: 'Basketball team was successfully destroyed.'
+    respond_to do |format|
+      format.html { redirect_to dashboard_path, notice: 'Basketball team was successfully deleted.' }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(@basketball_team) }
+    end
   end
 
   private
@@ -45,6 +76,10 @@ class BasketballTeamsController < ApplicationController
   end
 
   def basketball_team_params
-    params.require(:basketball_team).permit(:name, :city, :championships)
+    params.require(:basketball_team).permit(:name, :description)
+  end
+
+  def player_params
+    params.require(:player).permit(:last_name, :first_name, :birthdate, :license_number, :jersey_number, :photo, :citizenship_photo)
   end
 end

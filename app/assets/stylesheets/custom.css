@@ -1,22 +1,6 @@
-// app/assets/stylesheets/application.scss
-                          .card {
-                              border-radius: 8px;
-                              overflow: hidden;
-                          }
-
-.card-header {
-    background-color: #f8f9fa;
-}
-
-.card-body {
-    padding: 2rem;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    border: none;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
+/* app/assets/stylesheets/custom.css */
+img-thumbnail {
+    max-width: 1000px;
+    max-height: 1000px;
+    object-fit: cover;
 }

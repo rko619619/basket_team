@@ -5,8 +5,13 @@ Rails.application.routes.draw do
     sessions: 'admins/sessions'
   }
 
-  root "admin#dashboard"
+  root "dashboard#dashboard"
 
-  resource :dashboard, only: [:show], controller: 'admins/dashboard'
-  resources :basketball_teams
+  get 'dashboard', to: 'dashboard#dashboard', as: 'dashboard'
+  resources :basketball_teams do
+    member do
+      get :details  # Новый маршрут для показа деталей команды
+    end
+    resources :players, only: [:create, :destroy, :edit, :update]
+  end
 end
