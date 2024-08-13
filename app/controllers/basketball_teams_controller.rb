@@ -19,7 +19,7 @@ class BasketballTeamsController < ApplicationController
   def create_player
     @player = @basketball_team.players.build(player_params)
     if @player.save
-      redirect_to details_basketball_team_path(@basketball_team), notice: 'Игрок был добавлен.'
+      redirect_to details_basketball_team_path(@basketball_team), notice: "Игрок был добавлен."
     else
       @players = @basketball_team.players
       render :details
@@ -33,7 +33,7 @@ class BasketballTeamsController < ApplicationController
   def create
     @basketball_team = BasketballTeam.new(basketball_team_params)
     if @basketball_team.save
-      redirect_to dashboard_path, notice: 'Команда успешно создана.'
+      redirect_to dashboard_path, notice: "Команда успешно создана."
     else
       render :new, status: :unprocessable_entity
     end
@@ -49,7 +49,7 @@ class BasketballTeamsController < ApplicationController
   def update
     if @basketball_team.update(basketball_team_params)
       respond_to do |format|
-        format.html { redirect_to dashboard_path, notice: 'Команда успешно обновлена.' }
+        format.html { redirect_to dashboard_path, notice: "Команда успешно обновлена." }
         format.turbo_stream
       end
     else
@@ -64,7 +64,7 @@ class BasketballTeamsController < ApplicationController
     @basketball_team = BasketballTeam.find(params[:id])
     @basketball_team.destroy
     respond_to do |format|
-      format.html { redirect_to dashboard_path, notice: 'Basketball team was successfully deleted.' }
+      format.html { redirect_to dashboard_path, notice: "Basketball team was successfully deleted." }
       format.turbo_stream { render turbo_stream: turbo_stream.remove(@basketball_team) }
     end
   end

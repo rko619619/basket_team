@@ -2,7 +2,7 @@
 
 class PlayersController < ApplicationController
   before_action :set_basketball_team
-  before_action :set_player, only: [:edit, :update, :destroy]
+  before_action :set_player, only: [ :edit, :update, :destroy ]
 
   def new
     @player = @basketball_team.players.new
@@ -12,7 +12,7 @@ class PlayersController < ApplicationController
     @player = @basketball_team.players.new(player_params)
 
     if @player.save
-      redirect_to details_basketball_team_path(@basketball_team), notice: 'Player created successfully.'
+      redirect_to details_basketball_team_path(@basketball_team), notice: "Player created successfully."
     else
       redirect_to details_basketball_team_path(@basketball_team)
     end
@@ -25,7 +25,7 @@ class PlayersController < ApplicationController
 
   def update
     if @player.update(player_params)
-      redirect_to details_basketball_team_path(@basketball_team), notice: 'Player was successfully updated.'
+      redirect_to details_basketball_team_path(@basketball_team), notice: "Player was successfully updated."
     else
       flash.now[:alert] = @player.errors.full_messages.join(", ")
       render :edit
@@ -36,9 +36,9 @@ class PlayersController < ApplicationController
     @player = @basketball_team.players.find(params[:id])
 
     if @player.destroy
-      redirect_to details_basketball_team_path(@basketball_team), notice: 'Player was successfully deleted.'
+      redirect_to details_basketball_team_path(@basketball_team), notice: "Player was successfully deleted."
     else
-      flash[:alert] = 'Failed to delete player.'
+      flash[:alert] = "Failed to delete player."
       redirect_to details_basketball_team_path(@basketball_team)
     end
   end

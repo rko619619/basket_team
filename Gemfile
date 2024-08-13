@@ -9,11 +9,11 @@ gem "stimulus-rails"
 gem "jbuilder"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
-gem 'pg', '~> 1.1'
-gem 'bcrypt', '~> 3.1.7'
-gem 'bootstrap', '~> 5.3'
-gem 'devise'
-gem 'sassc-rails'
+gem "pg", "~> 1.1"
+gem "bcrypt", "~> 3.1.7"
+gem "bootstrap", "~> 5.3"
+gem "devise"
+gem "sassc-rails"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
