@@ -1,0 +1,76 @@
+<%= form_with(model: [@basketball_team, @player], local: true, data: { turbo_frame: false }) do |form| %>
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">Редактирование игрока</h3>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :last_name, "Фамилия игрока" %>
+            <%= form.text_field :last_name, class: "form-control", placeholder: "Введите фамилию" %>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :first_name, "Имя игрока" %>
+            <%= form.text_field :first_name, class: "form-control", placeholder: "Введите имя" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :birthdate, "Дата рождения" %>
+            <%= form.date_field :birthdate, class: "form-control" %>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :license_number, "Номер лицензии" %>
+            <%= form.text_field :license_number, class: "form-control", placeholder: "Введите номер лицензии" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :citizenship_photo, "Баскетбольное гражданство (Фото)" %>
+            <% if @player.citizenship_photo.attached? %>
+              <div class="mb-2">
+                <%= image_tag @player.citizenship_photo, class: "img-thumbnail", style: "max-width: 150px;" %>
+              </div>
+            <% end %>
+            <%= form.file_field :citizenship_photo, class: "form-control-file" %>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :jersey_number, "Игровой номер" %>
+            <%= form.text_field :jersey_number, class: "form-control", placeholder: "Введите игровой номер" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <div class="form-group">
+            <%= form.label :photo, "Фото игрока" %>
+            <% if @player.photo.attached? %>
+              <div class="mb-2">
+                <%= image_tag @player.photo, class: "img-thumbnail", style: "max-width: 150px;" %>
+              </div>
+            <% end %>
+            <%= form.file_field :photo, class: "form-control-file" %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer text-right">
+      <%= form.submit "Сохранить", class: "btn btn-success" %>
+      <%= link_to 'Вернуться назад', details_basketball_team_path(@player.basketball_team), class: 'btn btn-secondary' %>
+    </div>
+  </div>
+<% end %>

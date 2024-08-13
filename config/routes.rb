@@ -10,8 +10,8 @@ Rails.application.routes.draw do
   get 'dashboard', to: 'dashboard#dashboard', as: 'dashboard'
   resources :basketball_teams do
     member do
-      get :details  # Новый маршрут для показа деталей команды
+      get :details
     end
-    resources :players, only: [:create, :destroy, :edit, :update]
+    resources :players
   end
 end

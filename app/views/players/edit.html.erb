@@ -1,0 +1,4 @@
+<%= turbo_frame_tag "player_#{@player.id}" do %>
+  <h3>Редактировать игрока</h3>
+  <%= render 'form', player: @player %>
+<% end %>
