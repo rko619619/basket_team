@@ -14,6 +14,8 @@ class BasketballTeamsController < ApplicationController
     @basketball_team = BasketballTeam.find(params[:id])
     @players = @basketball_team.players
     @player = Player.new
+    @coaches = @basketball_team.coaches
+    @coach = Coach.new
   end
 
   def create_player
@@ -22,6 +24,16 @@ class BasketballTeamsController < ApplicationController
       redirect_to details_basketball_team_path(@basketball_team), notice: "Игрок был добавлен."
     else
       @players = @basketball_team.players
+      render :details
+    end
+  end
+
+  def create_coach
+    @coach = @basketball_team.coaches.build(coach_params)
+    if @coach.save
+      redirect_to details_basketball_team_path(@basketball_team), notice: "Тренер был добавлен."
+    else
+      @coaches = @basketball_team.coaches
       render :details
     end
   end
@@ -81,5 +93,9 @@ class BasketballTeamsController < ApplicationController
 
   def player_params
     params.require(:player).permit(:last_name, :first_name, :birthdate, :license_number, :jersey_number, :photo, :citizenship_photo)
+  end
+
+  def coach_params
+    params.require(:coach).permit(:first_name, :last_name, :date_of_birth, :license_number, :position)
   end
 end

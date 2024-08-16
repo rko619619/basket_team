@@ -1,0 +1,4 @@
+<%= turbo_frame_tag "coach_#{@coach.id}" do %>
+  <h3>Редактировать тренера</h3>
+  <%= render 'form', coach: @coach %>
+<% end %>

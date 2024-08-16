@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_08_13_183815) do
+ActiveRecord::Schema[7.2].define(version: 2024_08_16_101432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -58,6 +58,18 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_13_183815) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "coaches", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.date "date_of_birth"
+    t.string "license_number"
+    t.string "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "basketball_team_id", null: false
+    t.index ["basketball_team_id"], name: "index_coaches_on_basketball_team_id"
+  end
+
   create_table "players", force: :cascade do |t|
     t.string "last_name"
     t.string "first_name"
@@ -73,5 +85,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_13_183815) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "coaches", "basketball_teams"
   add_foreign_key "players", "basketball_teams"
 end

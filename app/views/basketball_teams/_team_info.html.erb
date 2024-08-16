@@ -1,0 +1,12 @@
+<div class="card mb-4">
+  <div class="card-header bg-primary text-white">
+    <h4 class="mb-0">Информация о команде</h4>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title"><strong>Название:</strong> <%= @basketball_team.name %></h5>
+    <p class="card-text"><strong>Описание:</strong> <%= @basketball_team.description %></p>
+    <div class="d-flex justify-content-end">
+      <%= link_to 'Назад к дашборду', root_path, class: 'btn btn-secondary' %>
+    </div>
+  </div>
+</div>

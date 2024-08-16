@@ -13,5 +13,6 @@ Rails.application.routes.draw do
       get :details
     end
     resources :players
+    resources :coaches
   end
 end

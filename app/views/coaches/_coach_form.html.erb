@@ -1,0 +1,46 @@
+<div class="card mb-4">
+  <div class="card-header bg-success text-white">
+    <h4 class="mb-0">Добавить нового тренера</h4>
+  </div>
+  <div class="card-body">
+    <%= form_with model: @coach, url: basketball_team_coaches_path(@basketball_team), local: true, html: { multipart: true } do |form| %>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :last_name, "Фамилия тренера" %>
+            <%= form.text_field :last_name, class: "form-control" %>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :first_name, "Имя тренера" %>
+            <%= form.text_field :first_name, class: "form-control" %>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :date_of_birth, "Дата рождения" %>
+            <%= form.date_field :date_of_birth, class: "form-control" %>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :license_number, "Номер лицензии" %>
+            <%= form.text_field :license_number, class: "form-control" %>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :position, "Должность" %>
+            <%= form.text_field :position, class: "form-control" %>
+          </div>
+        </div>
+      </div>
+      <%= form.submit "Добавить тренера", class: "btn btn-success btn-block" %>
+    <% end %>
+  </div>
+</div>
