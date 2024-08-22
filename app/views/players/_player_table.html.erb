@@ -20,7 +20,14 @@
         </thead>
         <tbody>
         <% @players.order(:jersey_number).each_with_index do |player, index| %>
-          <tr>
+          <% color_class = case player.color
+                           when 'red' then 'table-danger'
+                           when 'green' then 'table-success'
+                           when 'yellow' then 'table-warning'
+                           else ''
+                           end %>
+
+          <tr class="<%= color_class %>">
             <td><%= index + 1 %></td>
             <td>
               <% if player.photo.attached? %>

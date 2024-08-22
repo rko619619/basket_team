@@ -14,6 +14,12 @@ gem "bcrypt", "~> 3.1.7"
 gem "bootstrap", "~> 5.3"
 gem "devise"
 gem "sassc-rails"
+gem 'prawn'
+gem 'mini_magick'
+gem 'prawn-table'
+gem 'image_processing'
+gem 'pry'
+
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

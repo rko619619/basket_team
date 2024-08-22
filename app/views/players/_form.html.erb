@@ -55,6 +55,15 @@
       </div>
 
       <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="form-group">
+            <%= form.label :color, "Обозначить игрока" %>
+            <%= form.select :color, options_for_select([['Без цвета', 'transparent'], ['Красный', 'red'], ['Зеленый', 'green'], ['Желтый', 'yellow']], @player.color), class: "form-control" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-md-12 mb-3">
           <div class="form-group">
             <%= form.label :photo, "Фото игрока" %>

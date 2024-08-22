@@ -8,9 +8,12 @@ Rails.application.routes.draw do
   root "dashboard#dashboard"
 
   get "dashboard", to: "dashboard#dashboard", as: "dashboard"
+  resources :tournaments
+
   resources :basketball_teams do
     member do
       get :details
+      get :export_pdf, defaults: { format: :pdf }
     end
     resources :players
     resources :coaches

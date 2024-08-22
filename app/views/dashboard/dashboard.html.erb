@@ -1,4 +1,4 @@
-<!-- app/views/admins/dashboard.html.erb -->
+<!-- app/views/dashboard/dashboard.html.erb -->
 <div class="container mt-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Добро пожаловать</h2>
@@ -30,6 +30,13 @@
                 <%= link_to 'Показать', details_basketball_team_path(team), class: "btn btn-sm btn-info" %>
                 <%= link_to 'Изменить', edit_basketball_team_path(team), data: { turbo_frame: "basketball_team_#{team.id}" }, class: "btn btn-sm btn-primary" %>
                 <%= button_to 'Удалить', basketball_team_path(team), method: :delete, data: { turbo_confirm: 'Вы уверены?' }, class: 'btn btn-sm btn-danger' %>
+                <%= form_with url: export_pdf_basketball_team_path(team.id), method: :get, local: true do %>
+                  <div class="form-group">
+                    <%= label_tag :tournament_id, "Выберите турнир:" %>
+                    <%= select_tag :tournament_id, options_from_collection_for_select(@tournaments, :id, :name), prompt: "Выберите турнир", class: "form-control" %>
+                  </div>
+                  <%= submit_tag 'Экспорт в PDF', class: "btn btn-primary" %>
+                <% end %>
               </div>
             </td>
           </tr>
@@ -41,8 +48,43 @@
     <% end %>
   <% end %>
 
+  <!-- Секция для добавления новой команды -->
   <%= turbo_frame_tag "new_basketball_team" do %>
     <h3 class="mb-4">Добавить новую команду</h3>
     <%= render 'form', basketball_team: @new_basketball_team %>
+  <% end %>
+
+  <%= turbo_frame_tag "tournaments" do %>
+    <% if @tournaments.present? %>
+      <h3 class="mb-4">Турниры</h3>
+      <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+          <th>Название</th>
+          <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @tournaments.each do |tournament| %>
+          <tr>
+            <td><%= tournament.name %></td>
+            <td>
+              <div class="d-flex gap-2">
+                <%= link_to 'Изменить', edit_tournament_path(tournament), data: { turbo_frame: "tournament_#{tournament.id}" }, class: "btn btn-sm btn-primary" %>
+                <%= button_to 'Удалить', tournament_path(tournament), method: :delete, data: { turbo_confirm: 'Вы уверены?' }, class: 'btn btn-sm btn-danger' %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>Турниров нет.</p>
+    <% end %>
+  <% end %>
+
+  <%= turbo_frame_tag "new_tournament" do %>
+    <h3 class="mb-4">Добавить новый турнир</h3>
+    <%= render 'tournaments/form', tournament: @new_tournament %>
   <% end %>
 </div>

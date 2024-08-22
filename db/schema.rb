@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_08_16_101432) do
+ActiveRecord::Schema[7.2].define(version: 2024_08_18_132552) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -80,7 +80,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_16_101432) do
     t.bigint "basketball_team_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "color"
     t.index ["basketball_team_id"], name: "index_players_on_basketball_team_id"
+  end
+
+  create_table "tournaments", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

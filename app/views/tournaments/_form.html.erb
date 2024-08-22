@@ -1,0 +1,12 @@
+<!-- app/views/tournaments/_form.html.erb -->
+<%= form_with(model: tournament, local: true) do |form| %>
+  <div class="mb-3">
+    <%= form.label :name, "Название турнира" %>
+    <%= form.text_field :name, class: "form-control", placeholder: "Введите название турнира" %>
+  </div>
+
+  <div class="text-right">
+    <%= form.submit "Сохранить", class: "btn btn-success" %>
+    <%= link_to 'Вернуться назад', tournaments_path, class: 'btn btn-secondary' %>
+  </div>
+<% end %>

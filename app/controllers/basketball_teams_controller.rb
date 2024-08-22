@@ -1,6 +1,17 @@
+require 'pry'
+
 # app/controllers/basketball_teams_controller.rb
 class BasketballTeamsController < ApplicationController
   before_action :set_basketball_team, only: %i[show edit update destroy details create_player]
+
+  def export_pdf
+    team = BasketballTeam.find(params[:id])
+    tournament = Tournament.find(params[:tournament_id]) # Теперь `tournament_id` будет корректно передаваться
+
+    pdf = PdfGenerator.new(team, tournament).generate_pdf
+
+    send_data pdf, filename: "#{team.name}_#{Time.now.strftime('%Y%m%d')}.pdf", type: 'application/pdf'
+  end
 
   def index
     @basketball_teams = BasketballTeam.all
