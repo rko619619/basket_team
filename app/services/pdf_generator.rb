@@ -13,22 +13,15 @@ class PdfGenerator
   end
 
   def generate_pdf
-    Prawn::Document.generate("simple_test.pdf", page_size: 'A4', margin: [10, 10, 10, 10]) do |pdf|
+    Prawn::Document.generate("#{@basketball_team.name}", page_size: 'A4', margin: [10, 10, 10, 10]) do |pdf|
       set_font_families(pdf)
       header_for_page(pdf)
       title_for_page(pdf)
-
-      pdf.bounding_box([5, pdf.bounds.top - 155], width: pdf.bounds.width - 100, height: 30) do
-        pdf.text "ИГРОКИ:", size: 16, style: :bold, align: :left, inline_format: true
-      end
-
       players_table(pdf)
       color_table(pdf)
       sign(pdf)
       coaches_table(pdf)
       sign(pdf)
-
-      # Ensure all Tempfiles are closed and unlinked after PDF generation
       @resized_files.each(&:close!)
     end
   end
@@ -73,9 +66,7 @@ class PdfGenerator
 
   def resize_image(image_path, width, height)
     image = MiniMagick::Image.open(image_path)
-    image.resize "#{width}x#{height}!" # Resize without preserving aspect ratio
-
-    # Create a temporary file in the system's default temp directory
+    image.resize "#{width}x#{height}!"
     temp_file = Tempfile.new(['resized_image', '.png'], Rails.root.join('tmp'), binmode: true)
     image.write(temp_file.path)
     temp_file.rewind
@@ -84,6 +75,10 @@ class PdfGenerator
   end
 
   def players_table(pdf)
+    pdf.bounding_box([5, pdf.bounds.top - 155], width: pdf.bounds.width - 100, height: 30) do
+      pdf.text "ИГРОКИ:", size: 16, style: :bold, align: :left, inline_format: true
+    end
+
     player_data = @basketball_team.players.sort_by(&:jersey_number).each_with_index.map do |player, index|
       player_photo_path = if player.photo.attached?
                             file = Tempfile.new(['player_photo', '.png'], Rails.root.join('tmp'), binmode: true)
@@ -103,8 +98,8 @@ class PdfGenerator
                                         nil
                                       end
 
-      player_photo_image = player_photo_path ? { image: player_photo_path, position: :center } : "No Photo"
-      player_citizenship_photo_image = player_citizenship_photo_path ? { image: player_citizenship_photo_path, position: :center } : "No Citizenship Photo"
+      player_photo_image = player_photo_path ? { image: player_photo_path, position: :center } : "Нет фото"
+      player_citizenship_photo_image = player_citizenship_photo_path ? { image: player_citizenship_photo_path, position: :center } : "Нет фото"
 
       [
         index + 1,
@@ -142,8 +137,7 @@ class PdfGenerator
           cell.size = 11.5
         end
 
-        # Применяем цвет для каждой строки
-        table.rows(1..8).each_with_index do |row, i|
+        table.rows(1..8).each_with_index do |i|
           player = @basketball_team.players.sort_by(&:jersey_number)[i]
 
           next unless player
@@ -160,6 +154,7 @@ class PdfGenerator
                       else
                         'ffffff'
                       end
+
           table.row(i+1).each do |cell|
             cell.background_color = row_color
           end
@@ -168,7 +163,6 @@ class PdfGenerator
             cell.font_style = :bold
           end
 
-          # Изменяем размер шрифта только в 7-й колонке, начиная со второй строки
           table.cells.columns(7).rows(1..-1).each do |cell|
             cell.size = 20  # Устанавливаем нужный размер шрифта
           end
@@ -186,17 +180,14 @@ class PdfGenerator
       ]
 
       pdf.table(data, cell_style: { borders: [:left, :right, :top, :bottom], padding: [5, 5, 5, 5], size: 12, align: :left }, column_widths: [15, 400]) do |table|
-        # Настраиваем цвет фона для первой колонки
         table.cells.column(0).each_with_index do |cell, i|
           cell.background_color = data[i][0][:background_color]
         end
 
-        # Настройка шрифта и выравнивания текста для второй колонки
         table.cells.column(1).size = 14
         table.cells.column(1).align = :left
         table.cells.column(1).valign = :center
 
-        # Настройка границ таблицы
         table.cells.borders = [:left, :right, :top, :bottom]
         table.cells.border_width = 0.6
       end
