@@ -1,3 +1,3 @@
-unless AdminUser.where(email: "sasha@esasha.com").exists?
-  AdminUser.create!(email: "sasha@sasha.com", password: "sasha", password_confirmation: "sasha")
+unless Admin.where(email: "sasha@esasha.com").exists?
+  Admin.create!(email: "sasha@sasha.com", password: "sasha@sasha.com", password_confirmation: "sasha@sasha.com")
 end
