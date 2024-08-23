@@ -19,7 +19,7 @@ gem 'mini_magick'
 gem 'prawn-table'
 gem 'image_processing'
 gem 'pry'
-
+gem "dotenv-rails"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
