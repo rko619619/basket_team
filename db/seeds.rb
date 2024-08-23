@@ -1,3 +1,3 @@
-unless Admin.where(email: "sasha@esasha.com").exists?
-  Admin.create!(email: "sasha@sasha.com", password: "sasha@sasha.com", password_confirmation: "sasha@sasha.com")
+Admin.find_or_create_by(email: 'sasha@sasha.com') do |user|
+  user.password = "sasha@sasha.com"
 end
