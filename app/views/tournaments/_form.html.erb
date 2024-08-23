@@ -1,12 +1,16 @@
-<!-- app/views/tournaments/_form.html.erb -->
-<%= form_with(model: tournament, local: true) do |form| %>
-  <div class="mb-3">
-    <%= form.label :name, "Название турнира" %>
-    <%= form.text_field :name, class: "form-control", placeholder: "Введите название турнира" %>
-  </div>
+<!-- app/views/basketball_teams/_form.html.erb -->
+<div class="card shadow-sm">
+  <div class="card-body">
+    <%= form_with(model: tournament, local: false, class: "needs-validation") do |form| %>
+      <div class="mb-3">
+        <%= form.label :'Название турнира', class: 'form-label' %>
+        <%= form.text_field :name, class: 'form-control', required: true %>
+        <div class="invalid-feedback">
+          Название турнирова
+        </div>
+      </div>
 
-  <div class="text-right">
-    <%= form.submit "Сохранить", class: "btn btn-success" %>
-    <%= link_to 'Вернуться назад', tournaments_path, class: 'btn btn-secondary' %>
+      <%= form.submit 'Сохранить', class: 'btn btn-primary w-100' %>
+    <% end %>
   </div>
-<% end %>
+</div>
