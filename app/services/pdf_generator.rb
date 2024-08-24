@@ -2,6 +2,9 @@ require 'tempfile'
 require 'prawn'
 require 'prawn/table'
 require 'mini_magick'
+require 'image_processing/mini_magick'
+require 'image_processing/vips'
+require 'rmagick'
 
 class PdfGenerator
   def initialize(basketball_team, tournament)
@@ -13,7 +16,7 @@ class PdfGenerator
   end
 
   def generate_pdf
-    Prawn::Document.generate("#{@basketball_team.name}", page_size: 'A4', margin: [10, 10, 10, 10]) do |pdf|
+    Prawn::Document.generate("#{@basketball_team.name}.pdf", page_size: 'A4', margin: [10, 10, 10, 10]) do |pdf|
       set_font_families(pdf)
       header_for_page(pdf)
       title_for_page(pdf)
@@ -22,8 +25,9 @@ class PdfGenerator
       sign(pdf)
       coaches_table(pdf)
       sign(pdf)
-      @resized_files.each(&:close!)
     end
+  ensure
+    @resized_files.each(&:close!)
   end
 
   private
@@ -64,11 +68,21 @@ class PdfGenerator
     end
   end
 
-  def resize_image(image_path, width, height)
-    image = MiniMagick::Image.open(image_path)
-    image.resize "#{width}x#{height}!"
-    temp_file = Tempfile.new(['resized_image', '.png'], Rails.root.join('tmp'), binmode: true)
-    image.write(temp_file.path)
+  def resize_image(image_content, width, height)
+    tempfile = Tempfile.new(['temp_image', '.jpg'], Rails.root.join('tmp'), binmode: true)
+    tempfile.write(image_content)
+    tempfile.rewind
+
+    processor = ImageProcessing::MiniMagick.source(tempfile)
+    processed_image = processor
+                        .resize_to_fill(width, height)
+                        .convert("jpg")
+                        .quality(100)  # Увеличьте значение для лучшего качества
+                        .call
+
+    temp_file = Tempfile.new(['resized_image', '.jpg'], Rails.root.join('tmp'), binmode: true)
+    FileUtils.cp(processed_image.path, temp_file.path)
+
     temp_file.rewind
     @resized_files << temp_file
     temp_file.path
@@ -81,19 +95,13 @@ class PdfGenerator
 
     player_data = @basketball_team.players.sort_by(&:jersey_number).each_with_index.map do |player, index|
       player_photo_path = if player.photo.attached?
-                            file = Tempfile.new(['player_photo', '.png'], Rails.root.join('tmp'), binmode: true)
-                            file.write(player.photo.download)
-                            file.rewind
-                            resize_image(file.path, 80, 60)
+                            resize_image(player.photo.download, 80, 100)  # Use download.path if photo is ActiveStorage
                           else
                             nil
                           end
 
       player_citizenship_photo_path = if player.citizenship_photo.attached?
-                                        file = Tempfile.new(['citizenship_photo', '.png'], Rails.root.join('tmp'), binmode: true)
-                                        file.write(player.citizenship_photo.download)
-                                        file.rewind
-                                        resize_image(file.path, 90, 60)
+                                        resize_image(player.citizenship_photo.download, 70, 50)  # Use download.path if photo is ActiveStorage
                                       else
                                         nil
                                       end
@@ -126,7 +134,7 @@ class PdfGenerator
                       size: 12,
                       padding: [0, 0, 0, 0]
         },
-        column_widths: [20, 80, 90, 80, 80, 80, 90, 50]
+        column_widths: [20, 80, 90, 90, 80, 75, 90, 45]
       ) do |table|
         table.position = :center
 
@@ -137,7 +145,7 @@ class PdfGenerator
           cell.size = 11.5
         end
 
-        table.rows(1..8).each_with_index do |row, i|
+        table.rows(1..-1).each_with_index do |row, i|
           player = @basketball_team.players.sort_by(&:jersey_number)[i]
 
           next unless player
@@ -163,6 +171,10 @@ class PdfGenerator
             cell.font_style = :bold
           end
 
+          table.columns(6).each do |cell|
+            cell.padding = [25, 5 , 25, 5]
+          end
+
           table.cells.columns(7).rows(1..-1).each do |cell|
             cell.size = 20  # Устанавливаем нужный размер шрифта
           end
@@ -171,8 +183,8 @@ class PdfGenerator
     end
   end
 
-  def color_table(pdf)
-    pdf.bounding_box([5, pdf.cursor - 20], width: pdf.bounds.width - 5) do
+  def table_for_color(pdf, padding)
+    pdf.bounding_box([5, pdf.cursor - padding], width: pdf.bounds.width - 5) do
       data = [
         [{ content: '', background_color: 'ffff00' }, "- игроки с баскетбольным инностранным"],
         [{ content: '', background_color: 'ff0000' }, "- игроки с иностранным баскетбольным гражданством"],
@@ -194,9 +206,25 @@ class PdfGenerator
     end
   end
 
+  def color_table(pdf)
+    if pdf.cursor < 150
+      pdf.start_new_page
+      table_for_color(pdf, 90)
+    else
+      table_for_color(pdf, 20)
+    end
+  end
+
   def sign(pdf)
-    pdf.bounding_box([pdf.bounds.left + 160, pdf.cursor - 20], width: 250, height: 150) do
-      pdf.image Rails.root.join('app/assets/images/sign.png'), width: 250, height: 150, position: :left
+    if pdf.cursor < 150
+      pdf.start_new_page
+      pdf.bounding_box([pdf.bounds.left + 160, pdf.cursor - 90], width: 250, height: 150) do
+        pdf.image Rails.root.join('app/assets/images/sign.png'), width: 250, height: 150, position: :left
+      end
+    else
+      pdf.bounding_box([pdf.bounds.left + 160, pdf.cursor - 20], width: 250, height: 150) do
+        pdf.image Rails.root.join('app/assets/images/sign.png'), width: 250, height: 150, position: :left
+      end
     end
   end
 

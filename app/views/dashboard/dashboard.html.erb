@@ -31,12 +31,18 @@
                 <%= link_to 'Показать', details_basketball_team_path(team), class: "btn btn-sm btn-info flex-fill" %>
                 <%= link_to 'Изменить', edit_basketball_team_path(team), data: { turbo_frame: "basketball_team_#{team.id}" }, class: "btn btn-sm btn-primary flex-fill" %>
                 <%= button_to 'Удалить', basketball_team_path(team), method: :delete, data: { turbo_confirm: 'Вы уверены?' }, class: 'btn btn-sm btn-danger flex-fill' %>
-                <%= form_with url: export_pdf_basketball_team_path(team.id), method: :get, local: true, class: 'flex-fill' do %>
-                  <div class="form-group">
-                    <%= label_tag :tournament_id, "Выберите турнир:" %>
-                    <%= select_tag :tournament_id, options_from_collection_for_select(@tournaments, :id, :name), prompt: "Выберите турнир", class: "form-control form-control-sm" %>
-                  </div>
-                  <%= submit_tag 'Экспорт в PDF', class: "btn btn-primary w-100" %>
+                <% if @tournaments&.present? %>
+                  <%= form_with url: export_pdf_basketball_team_path(team.id), method: :get, local: true, class: 'flex-fill' do %>
+                    <div class="form-group">
+                      <%= label_tag :tournament_id, "Выберите турнир:" %>
+                      <% last_tournament_id = @tournaments.last&.id %>
+                      <%= select_tag :tournament_id,
+                                     options_from_collection_for_select(@tournaments, :id, :name, last_tournament_id),
+                                     prompt: "Выберите турнир",
+                                     class: "form-control form-control-sm" %>
+                    </div>
+                    <%= submit_tag 'Экспорт в PDF', class: "btn btn-primary w-100" %>
+                  <% end %>
                 <% end %>
               </div>
             </td>
