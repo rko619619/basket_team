@@ -20,6 +20,7 @@ gem 'prawn-table'
 gem 'image_processing'
 gem 'pry'
 gem "dotenv-rails"
+gem 'mini_racer'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
