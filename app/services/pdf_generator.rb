@@ -137,7 +137,7 @@ class PdfGenerator
           cell.size = 11.5
         end
 
-        table.rows(1..8).each_with_index do |i|
+        table.rows(1..8).each_with_index do |row, i|
           player = @basketball_team.players.sort_by(&:jersey_number)[i]
 
           next unless player
