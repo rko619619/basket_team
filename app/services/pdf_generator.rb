@@ -69,20 +69,24 @@ class PdfGenerator
   end
 
   def resize_image(image_content, width, height)
-    tempfile = Tempfile.new(['temp_image', '.jpg'], Rails.root.join('tmp'), binmode: true)
+    tempfile = Tempfile.new(['temp_image', '.png'], Rails.root.join('tmp'), binmode: true)
     tempfile.write(image_content)
     tempfile.rewind
 
-    processor = ImageProcessing::MiniMagick.source(tempfile)
-    processed_image = processor
-                        .resize_to_fill(width, height)
-                        .convert("jpg")
-                        .quality(100)  # Увеличьте значение для лучшего качества
-                        .call
+    image = MiniMagick::Image.open(tempfile.path)
 
+    # Изменяем размер изображения и обрезаем до нужного размера
+    image.resize "#{width}x#{height}!"
+
+    # Оптимизация изображения (уменьшение качества для JPEG)
+    image.format "png"
+    image.quality "100" # Это аналогично max_quality для JPEG
+
+    # Сохраняем изображение во временный файл
     temp_file = Tempfile.new(['resized_image', '.jpg'], Rails.root.join('tmp'), binmode: true)
-    FileUtils.cp(processed_image.path, temp_file.path)
+    image.write(temp_file.path)
 
+    # Перематываем файл на начало
     temp_file.rewind
     @resized_files << temp_file
     temp_file.path
