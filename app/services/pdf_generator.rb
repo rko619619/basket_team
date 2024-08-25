@@ -190,7 +190,7 @@ class PdfGenerator
   def table_for_color(pdf, padding)
     pdf.bounding_box([5, pdf.cursor - padding], width: pdf.bounds.width - 5) do
       data = [
-        [{ content: '', background_color: 'ffff00' }, "- игроки с баскетбольным инностранным"],
+        [{ content: '', background_color: 'ffff00' }, "- игроки с баскетбольным инностранным гражданством Российской Федерации"],
         [{ content: '', background_color: 'ff0000' }, "- игроки с иностранным баскетбольным гражданством"],
         [{ content: '', background_color: '00ff00' }, "- «молодой» игрок"]
       ]
