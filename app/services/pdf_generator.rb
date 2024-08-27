@@ -65,7 +65,7 @@ class PdfGenerator
       color_background_box_height = 38
     end
     # Первый текстовый блок
-    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 70], width: pdf.bounds.width - 150, height: 85) do
+    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 80], width: pdf.bounds.width - 150, height: 85) do
       # Рисуем фон
       pdf.fill_color background_color
       pdf.fill_rectangle([pdf.bounds.left, pdf.bounds.top + 2], pdf.bounds.width , pdf.bounds.height - color_background_box_height)
@@ -76,7 +76,7 @@ class PdfGenerator
     end
 
     # Второй текстовый блок
-    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 95], width: pdf.bounds.width - 150, height: 85) do
+    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 105], width: pdf.bounds.width - 150, height: 85) do
       pdf.fill_color '000000'
       pdf.text "«#{@basketball_team.name}»", size: 20, style: :bold, align: :center, inline_format: true
     end
