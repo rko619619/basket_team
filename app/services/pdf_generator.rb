@@ -65,7 +65,7 @@ class PdfGenerator
       color_background_box_height = 38
     end
     # Первый текстовый блок
-    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 80], width: pdf.bounds.width - 150, height: 85) do
+    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 70], width: pdf.bounds.width - 150, height: 85) do
       # Рисуем фон
       pdf.fill_color background_color
       pdf.fill_rectangle([pdf.bounds.left, pdf.bounds.top + 2], pdf.bounds.width , pdf.bounds.height - color_background_box_height)
@@ -76,15 +76,14 @@ class PdfGenerator
     end
 
     # Второй текстовый блок
-    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 105], width: pdf.bounds.width - 150, height: 85) do
-
+    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 95], width: pdf.bounds.width - 150, height: 85) do
       pdf.fill_color '000000'
       pdf.text "«#{@basketball_team.name}»", size: 20, style: :bold, align: :center, inline_format: true
     end
 
     if @basketball_team.description.present?
       # Третий текстовый блок
-      pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 130], width: pdf.bounds.width - 150, height: 85) do
+      pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 120], width: pdf.bounds.width - 150, height: 85) do
 
         pdf.fill_color '000000'
         pdf.text "(#{@basketball_team.description})", size: 18, align: :center, style: :bold, inline_format: true unless @basketball_team.description.nil?
@@ -118,11 +117,11 @@ class PdfGenerator
 
   def players_table(pdf)
     if @basketball_team.description.present?
-      pdf.bounding_box([5, pdf.bounds.top - 155], width: pdf.bounds.width - 100, height: 30) do
+      pdf.bounding_box([5, pdf.bounds.top - 145], width: pdf.bounds.width - 100, height: 30) do
         pdf.text "ИГРОКИ:", size: 16, style: :bold, align: :left, inline_format: true
       end
     else
-      pdf.bounding_box([5, pdf.bounds.top - 135], width: pdf.bounds.width - 100, height: 30) do
+      pdf.bounding_box([5, pdf.bounds.top - 125], width: pdf.bounds.width - 100, height: 30) do
         pdf.text "ИГРОКИ:", size: 16, style: :bold, align: :left, inline_format: true
       end
     end
