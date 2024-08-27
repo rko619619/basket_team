@@ -57,14 +57,38 @@ class PdfGenerator
   end
 
   def title_for_page(pdf)
+    background_color = 'D3D3D3' # Темный светло-серый цвет
+
+    if @basketball_team.description.present?
+      color_background_box_height = 15
+    else
+      color_background_box_height = 38
+    end
+    # Первый текстовый блок
     pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 80], width: pdf.bounds.width - 150, height: 85) do
+      # Рисуем фон
+      pdf.fill_color background_color
+      pdf.fill_rectangle([pdf.bounds.left, pdf.bounds.top + 2], pdf.bounds.width , pdf.bounds.height - color_background_box_height)
+
+      # Возвращаем цвет текста
+      pdf.fill_color '000000'
       pdf.text "Утвержденный список лицензий команды", size: 20, align: :center, inline_format: true
     end
+
+    # Второй текстовый блок
     pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 105], width: pdf.bounds.width - 150, height: 85) do
+
+      pdf.fill_color '000000'
       pdf.text "«#{@basketball_team.name}»", size: 20, style: :bold, align: :center, inline_format: true
     end
-    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 130], width: pdf.bounds.width - 150, height: 85) do
-      pdf.text "(#{@basketball_team.description})", size: 18, align: :center, style: :bold, inline_format: true unless @basketball_team.description.nil?
+
+    if @basketball_team.description.present?
+      # Третий текстовый блок
+      pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 130], width: pdf.bounds.width - 150, height: 85) do
+
+        pdf.fill_color '000000'
+        pdf.text "(#{@basketball_team.description})", size: 18, align: :center, style: :bold, inline_format: true unless @basketball_team.description.nil?
+      end
     end
   end
 
@@ -93,8 +117,14 @@ class PdfGenerator
   end
 
   def players_table(pdf)
-    pdf.bounding_box([5, pdf.bounds.top - 155], width: pdf.bounds.width - 100, height: 30) do
-      pdf.text "ИГРОКИ:", size: 16, style: :bold, align: :left, inline_format: true
+    if @basketball_team.description.present?
+      pdf.bounding_box([5, pdf.bounds.top - 155], width: pdf.bounds.width - 100, height: 30) do
+        pdf.text "ИГРОКИ:", size: 16, style: :bold, align: :left, inline_format: true
+      end
+    else
+      pdf.bounding_box([5, pdf.bounds.top - 135], width: pdf.bounds.width - 100, height: 30) do
+        pdf.text "ИГРОКИ:", size: 16, style: :bold, align: :left, inline_format: true
+      end
     end
 
     player_data = @basketball_team.players.sort_by(&:jersey_number).each_with_index.map do |player, index|
@@ -190,22 +220,25 @@ class PdfGenerator
   def table_for_color(pdf, padding)
     pdf.bounding_box([5, pdf.cursor - padding], width: pdf.bounds.width - 5) do
       data = [
-        [{ content: '', background_color: 'ffff00' }, "- игроки с баскетбольным инностранным гражданством Российской Федерации"],
+        [{ content: '', background_color: 'ffff00' }, "- игроки с баскетбольным гражданством Российской Федерации"],
         [{ content: '', background_color: 'ff0000' }, "- игроки с иностранным баскетбольным гражданством"],
         [{ content: '', background_color: '00ff00' }, "- «молодой» игрок"]
       ]
 
-      pdf.table(data, cell_style: { borders: [:left, :right, :top, :bottom], padding: [5, 5, 5, 5], size: 12, align: :left }, column_widths: [15, 400]) do |table|
+      pdf.table(data, cell_style: { size: 12, align: :left }, column_widths: [60, 400]) do |table|
+        # Настройка первого столбца (с цветными квадратами)
         table.cells.column(0).each_with_index do |cell, i|
           cell.background_color = data[i][0][:background_color]
+          cell.borders = [:left, :right, :top, :bottom] # Включаем рамки
+          cell.border_width = 0.6
         end
 
-        table.cells.column(1).size = 14
-        table.cells.column(1).align = :left
-        table.cells.column(1).valign = :center
-
-        table.cells.borders = [:left, :right, :top, :bottom]
-        table.cells.border_width = 0.6
+        # Настройка второго столбца (с текстом)
+        table.cells.column(1).each do |cell|
+          cell.borders = []
+          cell.size = 14
+          cell.align = :left
+        end
       end
     end
   end
@@ -220,14 +253,14 @@ class PdfGenerator
   end
 
   def sign(pdf)
-    if pdf.cursor < 150
+    if pdf.cursor < 110
       pdf.start_new_page
-      pdf.bounding_box([pdf.bounds.left + 160, pdf.cursor - 90], width: 250, height: 150) do
-        pdf.image Rails.root.join('app/assets/images/sign.png'), width: 250, height: 150, position: :left
+      pdf.bounding_box([pdf.bounds.left + 160, pdf.cursor - 90], width: 210, height: 110) do
+        pdf.image Rails.root.join('app/assets/images/sign.png'), width: 210, height: 110, position: :left
       end
     else
-      pdf.bounding_box([pdf.bounds.left + 160, pdf.cursor - 20], width: 250, height: 150) do
-        pdf.image Rails.root.join('app/assets/images/sign.png'), width: 250, height: 150, position: :left
+      pdf.bounding_box([pdf.bounds.left + 160, pdf.cursor - 20], width: 210, height: 110) do
+        pdf.image Rails.root.join('app/assets/images/sign.png'), width: 210, height: 110, position: :left
       end
     end
   end

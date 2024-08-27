@@ -1,4 +1,5 @@
 # app/models/player.rb
+
 class Player < ApplicationRecord
   belongs_to :basketball_team
 
