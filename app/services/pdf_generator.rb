@@ -60,12 +60,12 @@ class PdfGenerator
     background_color = 'D3D3D3' # Темный светло-серый цвет
 
     if @basketball_team.description.present?
-      color_background_box_height = 15
+      color_background_box_height = 23
     else
-      color_background_box_height = 38
+      color_background_box_height = 45
     end
     # Первый текстовый блок
-    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 80], width: pdf.bounds.width - 150, height: 85) do
+    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 76], width: pdf.bounds.width - 150, height: 85) do
       # Рисуем фон
       pdf.fill_color background_color
       pdf.fill_rectangle([pdf.bounds.left, pdf.bounds.top + 2], pdf.bounds.width , pdf.bounds.height - color_background_box_height)
@@ -76,14 +76,14 @@ class PdfGenerator
     end
 
     # Второй текстовый блок
-    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 105], width: pdf.bounds.width - 150, height: 85) do
+    pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 96], width: pdf.bounds.width - 150, height: 85) do
       pdf.fill_color '000000'
       pdf.text "«#{@basketball_team.name}»", size: 20, style: :bold, align: :center, inline_format: true
     end
 
     if @basketball_team.description.present?
       # Третий текстовый блок
-      pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 120], width: pdf.bounds.width - 150, height: 85) do
+      pdf.bounding_box([pdf.bounds.left + 80, pdf.bounds.top - 116], width: pdf.bounds.width - 150, height: 85) do
 
         pdf.fill_color '000000'
         pdf.text "(#{@basketball_team.description})", size: 18, align: :center, style: :bold, inline_format: true unless @basketball_team.description.nil?
@@ -128,13 +128,13 @@ class PdfGenerator
 
     player_data = @basketball_team.players.sort_by(&:jersey_number).each_with_index.map do |player, index|
       player_photo_path = if player.photo.attached?
-                            resize_image(player.photo.download, 80, 100)  # Use download.path if photo is ActiveStorage
+                            resize_image(player.photo.download, 60, 79)  # Use download.path if photo is ActiveStorage
                           else
                             nil
                           end
 
       player_citizenship_photo_path = if player.citizenship_photo.attached?
-                                        resize_image(player.citizenship_photo.download, 70, 50)  # Use download.path if photo is ActiveStorage
+                                        resize_image(player.citizenship_photo.download, 80, 60)  # Use download.path if photo is ActiveStorage
                                       else
                                         nil
                                       end
@@ -159,15 +159,16 @@ class PdfGenerator
       pdf.table(
         [['№', 'Фото', 'Фамилия', 'Имя', 'Дата рождения', '№ лицензии', 'Баскетбольное гражданство', 'Игровой номер']] + player_data,
         header: true,
-        cell_style: { borders: [:left, :right, :top, :bottom],
-                      border_width: 0.8,
+        cell_style: { height: 80,
+          borders: [:left, :right, :top, :bottom],
+                      border_width: 1,
                       align: :center,
                       valign: :center,
                       overflow: :shrink_to_fit,
                       size: 12,
                       padding: [0, 0, 0, 0]
         },
-        column_widths: [20, 80, 90, 90, 80, 75, 90, 45]
+        column_widths: [20, 60, 100, 100, 80, 75, 90, 45]
       ) do |table|
         table.position = :center
 
@@ -200,16 +201,20 @@ class PdfGenerator
             cell.background_color = row_color
           end
 
+          table.columns(1).each do |cell|
+            cell.padding = [0.5, 0, 0, 0]
+          end
+
           table.columns(7).each do |cell|
             cell.font_style = :bold
           end
 
           table.columns(6).each do |cell|
-            cell.padding = [25, 5 , 25, 5]
+            cell.padding = [10, 5, 10, 5]
           end
 
           table.cells.columns(7).rows(1..-1).each do |cell|
-            cell.size = 20  # Устанавливаем нужный размер шрифта
+            cell.size = 20
           end
         end
       end
@@ -252,14 +257,14 @@ class PdfGenerator
   end
 
   def sign(pdf)
-    if pdf.cursor < 110
+    if pdf.cursor < 90
       pdf.start_new_page
-      pdf.bounding_box([pdf.bounds.left + 160, pdf.cursor - 90], width: 210, height: 110) do
-        pdf.image Rails.root.join('app/assets/images/sign.png'), width: 210, height: 110, position: :left
+      pdf.bounding_box([pdf.bounds.left + 185, pdf.cursor - 90], width: 180, height: 90) do
+        pdf.image Rails.root.join('app/assets/images/sign.png'), width: 180, height: 90, position: :left
       end
     else
-      pdf.bounding_box([pdf.bounds.left + 160, pdf.cursor - 20], width: 210, height: 110) do
-        pdf.image Rails.root.join('app/assets/images/sign.png'), width: 210, height: 110, position: :left
+      pdf.bounding_box([pdf.bounds.left + 185, pdf.cursor - 20], width: 180, height: 90) do
+        pdf.image Rails.root.join('app/assets/images/sign.png'), width: 180, height: 90, position: :left
       end
     end
   end
@@ -269,7 +274,7 @@ class PdfGenerator
 
     title_for_page(pdf)
 
-    pdf.bounding_box([5, pdf.bounds.top - 160], width: pdf.bounds.width - 100, height: 30) do
+    pdf.bounding_box([5, pdf.bounds.top - 150], width: pdf.bounds.width - 100, height: 30) do
       pdf.text "ТРЕНЕРСКО-АДМИНИСТРАТИВНЫЙ ПЕРСОНАЛ:", size: 16, style: :bold, align: :left, inline_format: true
     end
 
@@ -284,7 +289,7 @@ class PdfGenerator
       ]
     end
 
-    pdf.bounding_box([5, pdf.bounds.top - 180], width: pdf.bounds.width - 5) do
+    pdf.bounding_box([5, pdf.bounds.top - 170], width: pdf.bounds.width - 5) do
       pdf.table(
         [['№', 'Фамилия', 'Имя', 'Дата рождения', '№ лицензии', 'Должность']] + coaches_data,
         header: true,
